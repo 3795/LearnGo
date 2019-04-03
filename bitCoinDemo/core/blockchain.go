@@ -1,6 +1,9 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 type BlockChain struct {
 	Blocks []*Block
@@ -24,6 +27,9 @@ func (bc *BlockChain) Print() {
 		fmt.Printf("Block Data: %s\n", block.Data)
 		fmt.Printf("Block Prev: %x\n", string(block.PrevBlockHash))
 		fmt.Println("Block Timestamp: ", block.Timestamp)
+
+		pow := NewProofOfWork(block)
+		fmt.Printf("Pow: %s\n", strconv.FormatBool(pow.Validate()))
 		fmt.Println()
 	}
 }

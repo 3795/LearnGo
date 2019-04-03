@@ -19,11 +19,14 @@ type Block struct {
 
 	// 区块自身的哈希值，检验区块是否有效
 	Hash []byte
+
+	// 证明工作量
+	Nonce int
 }
 
 // 生成新的区块
 func NewBlock(data string, prevBlockHash []byte) *Block {
-	block := &Block{time.Now().Unix(), []byte(data), prevBlockHash, []byte{}}
+	block := &Block{time.Now().Unix(), []byte(data), prevBlockHash, []byte{}, 0}
 	block.SetHash()
 	return block
 }
