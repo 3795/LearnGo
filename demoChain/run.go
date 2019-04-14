@@ -1,6 +1,6 @@
 package main
 
-import "project/demoChain/core"
+import "demoChain/core"
 
 func main() {
 	bc := core.NewBlockchain()

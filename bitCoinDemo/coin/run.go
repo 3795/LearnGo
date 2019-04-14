@@ -1,7 +1,7 @@
 package main
 
 import (
-	"project/bitCoinDemo/core"
+	"bitCoinDemo/core"
 )
 
 func main() {
