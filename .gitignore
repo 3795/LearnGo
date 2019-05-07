@@ -13,3 +13,5 @@
 demoChain/.idea/
 bitCoinDemo/.idea/
 my-rpc/.idea/
+*.xml
+*.iml
