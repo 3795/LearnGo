@@ -1,26 +1,16 @@
 package main
 
 import (
-	"errors"
 	"fmt"
+	"time"
 )
 
-var v = "Test"
-
 func main() {
-	outerFunc()
+	for i:=0; i<10; i++ {
+		go func(i int) {
+			fmt.Println(i)
+		}(i)
+	}
+	time.Sleep(1 * time.Minute)
 }
 
-func outerFunc() {
-	defer func() {
-		p := recover()
-		if p !=  nil {
-			fmt.Println(p)
-		}
-	}()
-	innerFunc()
-}
-
-func innerFunc() {
-	panic(errors.New("出现了一个Panic"))
-}

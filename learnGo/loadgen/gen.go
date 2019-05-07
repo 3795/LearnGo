@@ -210,10 +210,8 @@ func (gen *myGenerator) genLoad(throttle <-chan time.Time) {
 func (gen *myGenerator) Start() bool {
 	fmt.Println("Starting load generator...")
 	// 检查是否具备可启动的状态，顺便设置状态为正在启动
-	if !atomic.CompareAndSwapUint32(
-		&gen.status, lib.STATUS_ORIGINAL, lib.STATUS_STARTING) {
-		if !atomic.CompareAndSwapUint32(
-			&gen.status, lib.STATUS_STOPPED, lib.STATUS_STARTING) {
+	if !atomic.CompareAndSwapUint32(&gen.status, lib.STATUS_ORIGINAL, lib.STATUS_STARTING) {
+		if !atomic.CompareAndSwapUint32(&gen.status, lib.STATUS_STOPPED, lib.STATUS_STARTING) {
 			return false
 		}
 	}
