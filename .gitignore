@@ -15,3 +15,7 @@ bitCoinDemo/.idea/
 my-rpc/.idea/
 *.xml
 *.iml
+blockChainDemo/Gopkg.toml
+blockChainDemo/Gopkg.lock
+demoChain/Gopkg.toml
+demoChain/Gopkg.lock
