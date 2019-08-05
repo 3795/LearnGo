@@ -16,7 +16,7 @@ type Counts struct {
 }
 
 // 组件摘要结构的类型
-type SummaryStrut struct {
+type SummaryStruct struct {
 	ID        MID         `json:"id"`
 	Called    uint64      `json:"called"`
 	Accepted  uint64      `json:"accepted"`
@@ -37,7 +37,7 @@ type Module interface {
 	CompletedCount() uint64          // 组件已成功完成的调用计数
 	HandlingNumber() uint64          // 当前组件正在处理的调用的数量
 	Counts() Counts                  // 用于一次性获取所有计数
-	Summary() SummaryStrut           // 获取组件摘要
+	Summary() SummaryStruct          // 获取组件摘要
 }
 
 // Downloader 代表下载器的接口类型。

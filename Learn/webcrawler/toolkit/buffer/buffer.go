@@ -1,4 +1,4 @@
-package toolkit
+package buffer
 
 import (
 	"Project/LearnGo/Learn/webcrawler/errors"
