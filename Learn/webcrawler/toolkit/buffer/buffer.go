@@ -48,7 +48,7 @@ func (buf *myBuffer) Len() uint32 {
 }
 
 func (buf *myBuffer) Put(datum interface{}) (bool, error) {
-	buf.closingLock.RUnlock()
+	buf.closingLock.RLock()
 	defer buf.closingLock.RUnlock()
 
 	if buf.Closed() {

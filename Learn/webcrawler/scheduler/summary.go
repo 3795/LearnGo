@@ -31,6 +31,62 @@ type mySchedSummary struct {
 	sched *myScheduler
 }
 
+// Same 用于判断当前的调度器摘要与另一份是否相同。
+func (one *SummaryStruct) Same(another SummaryStruct) bool {
+	if !another.RequestArgs.Same(&one.RequestArgs) {
+		return false
+	}
+	if another.DataArgs != one.DataArgs {
+		return false
+	}
+	if another.ModuleArgs != one.ModuleArgs {
+		return false
+	}
+	if another.Status != one.Status {
+		return false
+	}
+	if another.Downloaders == nil || len(another.Downloaders) != len(one.Downloaders) {
+		return false
+	}
+	for i, ds := range another.Downloaders {
+		if ds != one.Downloaders[i] {
+			return false
+		}
+	}
+	if another.Analyzers == nil || len(another.Analyzers) != len(one.Analyzers) {
+		return false
+	}
+	for i, as := range another.Analyzers {
+		if as != one.Analyzers[i] {
+			return false
+		}
+	}
+	if another.Pipelines == nil || len(another.Pipelines) != len(one.Pipelines) {
+		return false
+	}
+	for i, ps := range another.Pipelines {
+		if ps != one.Pipelines[i] {
+			return false
+		}
+	}
+	if another.ReqBufferPool != one.ReqBufferPool {
+		return false
+	}
+	if another.RespBufferPool != one.RespBufferPool {
+		return false
+	}
+	if another.ItemBufferPool != one.ItemBufferPool {
+		return false
+	}
+	if another.ErrorBufferPool != one.ErrorBufferPool {
+		return false
+	}
+	if another.NumURL != one.NumURL {
+		return false
+	}
+	return true
+}
+
 func (ss *mySchedSummary) Struct() SummaryStruct {
 	registrar := ss.sched.registrar
 	return SummaryStruct{
@@ -70,7 +126,6 @@ func newSchedSummary(requestArgs RequestArgs, dataArgs DataArgs, moduleArgs Modu
 		sched:       sched,
 	}
 }
-
 
 // SummaryStruct 代表调度器摘要的结构。
 type SummaryStruct struct {
