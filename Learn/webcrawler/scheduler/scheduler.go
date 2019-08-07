@@ -116,20 +116,16 @@ func (sched *myScheduler) Init(requestArgs RequestArgs, dataArgs DataArgs, modul
 	}
 	sched.maxDepth = requestArgs.MaxDepth
 	logger.Infof("-- Max depth: %d", sched.maxDepth)
-	sched.acceptedDomainMap, _ =
-		cmap.NewConcurrentMap(1, nil)
+	sched.acceptedDomainMap, _ = cmap.NewConcurrentMap(1, nil)
 	for _, domain := range requestArgs.AcceptedDomains {
 		_, _ = sched.acceptedDomainMap.Put(domain, struct{}{})
 	}
-	logger.Infof("-- Accepted primary domains: %v",
-		requestArgs.AcceptedDomains)
+	logger.Infof("-- Accepted primary domains: %v", requestArgs.AcceptedDomains)
 	sched.urlMap, _ = cmap.NewConcurrentMap(16, nil)
-	logger.Infof("-- URL map: length: %d, concurrency: %d",
-		sched.urlMap.Len(), sched.urlMap.Concurrency())
+	logger.Infof("-- URL map: length: %d, concurrency: %d", sched.urlMap.Len(), sched.urlMap.Concurrency())
 	sched.initBufferPool(dataArgs)
 	sched.resetContext()
-	sched.summary =
-		newSchedSummary(requestArgs, dataArgs, moduleArgs, sched)
+	sched.summary = newSchedSummary(requestArgs, dataArgs, moduleArgs, sched)
 	// 注册组件。
 	logger.Info("Register modules...")
 	if err = sched.registerModules(moduleArgs); err != nil {
@@ -141,7 +137,7 @@ func (sched *myScheduler) Init(requestArgs RequestArgs, dataArgs DataArgs, modul
 
 func (sched *myScheduler) Start(firstHTTPReq *http.Request) (err error) {
 	defer func() {
-		if p := recover(); p!= nil {
+		if p := recover(); p != nil {
 			errMsg := fmt.Sprintf("Fatal scheduler error: %s", p)
 			logger.Fatal(errMsg)
 			err = genError(errMsg)

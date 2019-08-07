@@ -130,7 +130,7 @@ func (args *ModuleArgs) Check() error {
 func (args *ModuleArgs) Summary() ModuleArgsSummary {
 	return ModuleArgsSummary{
 		DownloaderListSize: len(args.Downloaders),
-		AnalyzerListSize: len(args.Analyzers),
-		PipelineListSize: len(args.Pipelines),
+		AnalyzerListSize:   len(args.Analyzers),
+		PipelineListSize:   len(args.Pipelines),
 	}
 }

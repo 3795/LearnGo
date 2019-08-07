@@ -2,8 +2,11 @@ package main
 
 import "fmt"
 
+/**
+最小栈，使用了辅助栈的解法
+*/
 type MinStack struct {
-	data []int
+	data   []int
 	helper []int
 }
 

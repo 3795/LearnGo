@@ -5,6 +5,9 @@ import (
 	"strconv"
 )
 
+/**
+二进制相加
+*/
 func addBinary(a string, b string) string {
 	var ans string
 	ca := 0
