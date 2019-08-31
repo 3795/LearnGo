@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Project/LearnGo/Learn/algorithm/array/array_util"
+	"LearnGo/Learn/algorithm/array/array_util"
 	"fmt"
 )
 

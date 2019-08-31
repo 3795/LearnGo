@@ -1,6 +1,6 @@
 package scheduler
 
-import "Project/LearnGo/Learn/webcrawler/module"
+import "LearnGo/Learn/webcrawler/module"
 
 // 代表参数容器的接口类型
 type Args interface {
