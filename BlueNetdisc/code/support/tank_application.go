@@ -1,8 +1,14 @@
 package support
 
 import (
+	"LearnGo/BlueNetdisc/code/core"
+	"LearnGo/BlueNetdisc/code/tool/result"
+	"LearnGo/BlueNetdisc/code/tool/util"
 	"flag"
 	"fmt"
+	"golang.org/x/crypto/ssh/terminal"
+	"strings"
+	"syscall"
 )
 
 const (
@@ -55,4 +61,65 @@ func (this *TankApplication) Start() {
 	this.dest = *destPtr
 	this.overwrite = *overwritePtr
 	this.filename = *filenamePtr
+
+	lowerMode := strings.ToLower(this.mode)
+	if this.mode == "" || lowerMode == MODE_WEB {
+		// 以web方式启动
+		this.HandleWeb()
+	} else if lowerMode == MODE_VERSION {
+		this.HandleVersion()
+	} else {
+		if this.host == "" {
+			this.host = fmt.Sprintf("http://127.0.0.1:%d", core.DEFAULT_SERVER_PORT)
+		}
+
+		if this.username == "" {
+			panic(result.BadRequest("in mode %s, username is required", this.mode))
+		}
+
+		if this.password == "" {
+			if util.EnvDevlopment() {
+				panic(result.BadRequest("If run in IDE, use -password yourPassword to input password"))
+			} else {
+				fmt.Print("Enter Password:")
+				bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
+				if err != nil {
+					panic(err)
+				}
+
+				this.password = string(bytePassword)
+				fmt.Println()
+			}
+		}
+
+		if lowerMode == MODE_MIRROR {
+			this.HandleMirror()
+		} else if lowerMode == MODE_MIGRATE_20_TO_30 {
+			this.HandleMigrate20to30()
+		} else if lowerMode == MODE_CRAWL {
+			this.HandleCrawl()
+		} else {
+			panic(result.BadRequest("cannot handle mode %s \r\n", this.mode))
+		}
+	}
+}
+
+func (this *TankApplication) HandleWeb() {
+	//tankLogger := &TankLogger{}
+}
+
+func (this *TankApplication) HandleVersion() {
+
+}
+
+func (this *TankApplication) HandleMirror() {
+
+}
+
+func (this *TankApplication) HandleMigrate20to30() {
+
+}
+
+func (this *TankApplication) HandleCrawl() {
+
 }
