@@ -6,7 +6,10 @@ require (
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/Sirupsen/logrus v1.4.0
 	github.com/jinzhu/gorm v1.9.11
+	github.com/json-iterator/go v1.1.7
 	github.com/kr/pretty v0.1.0 // indirect
+	github.com/robfig/cron v1.2.0
+	golang.org/x/crypto v0.0.0-20190605123033-f99c8df09eb5
 	golang.org/x/net v0.0.0-20190827160401-ba9fcec4b297
 	golang.org/x/text v0.3.2
 	google.golang.org/appengine v1.6.2 // indirect

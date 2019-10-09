@@ -73,6 +73,17 @@ func GetDirOfPath(fullPath string) string {
 	return fullPath[:index]
 }
 
+// 从文件路径中获取文件名，如：/var/www/xx.log -> xx.log
+func GetFilenameOfPath(fullpath string) string {
+	macIndex := strings.LastIndex(fullpath, "/")
+	winIndex := strings.LastIndex(fullpath, "\\")
+	index := macIndex
+	if winIndex > index {
+		index = winIndex
+	}
+	return fullpath[index+1:]
+}
+
 func GetLogPath() string {
 	homePath := GetHomePath()
 	return homePath

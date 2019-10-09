@@ -105,7 +105,14 @@ func (this *TankApplication) Start() {
 }
 
 func (this *TankApplication) HandleWeb() {
-	//tankLogger := &TankLogger{}
+	// 1. Logger
+	tankLogger := &TankLogger{}
+	core.LOGGER = tankLogger
+	tankLogger.Init()
+	defer tankLogger.Destroy()
+
+	// 2. Configuration
+
 }
 
 func (this *TankApplication) HandleVersion() {
