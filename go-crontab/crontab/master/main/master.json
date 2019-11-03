@@ -9,7 +9,7 @@
   "apiWriteTimeout": 5000,
 
   "etcd的集群列表": "配置多个, 避免单点故障",
-  "etcdEndpoints": ["192.168.74.128:2379"],
+  "etcdEndpoints": ["192.168.56.101:2379"],
 
   "etcd的连接超时": "单位毫秒",
   "etcdDialTimeout": 5000,

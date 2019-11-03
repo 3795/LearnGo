@@ -1,8 +1,11 @@
 package main
 
 import (
+	"LearnGo/go-crontab/crontab/master"
 	"flag"
+	"fmt"
 	"runtime"
+	"time"
 )
 
 var (
@@ -29,5 +32,25 @@ func main() {
 
 	initEnv()
 
-	//if err = master.In
+	// 加载配置
+	if err = master.InitConfig(confFile); err != nil {
+		goto ERR
+	}
+
+	// 启动Api HTTP服务
+	if err = master.InitApiServer(); err != nil {
+		goto ERR
+	}
+
+	// 启动Etcd服务
+	if err = master.InitJobMgr(); err != nil {
+		goto ERR
+	}
+
+	for {
+		time.Sleep(5 * time.Second)
+	}
+
+ERR:
+	fmt.Println(err)
 }

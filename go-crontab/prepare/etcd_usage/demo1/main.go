@@ -20,7 +20,7 @@ func main() {
 
 	// 客户端配置
 	config = clientv3.Config{
-		Endpoints:   []string{"192.168.74.128:2379"},
+		Endpoints:   []string{"192.168.56.101:2379"},
 		DialTimeout: 5 * time.Second,
 	}
 
@@ -32,7 +32,7 @@ func main() {
 	kv = clientv3.NewKV(client)
 
 	// 放入KV
-	//Put(kv)
+	Put(kv)
 	// 获取KV
 	//Get(kv)
 	// 删除KV
@@ -45,7 +45,7 @@ func main() {
 	//watcher = clientv3.NewWatcher(client)
 	//Watch(kv, watcher)
 
-	Operation(kv)
+	//Operation(kv)
 }
 
 /**

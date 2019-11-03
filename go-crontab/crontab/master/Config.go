@@ -6,14 +6,14 @@ import (
 )
 
 type Config struct {
-	ApiPort               int      `json:"api_port"`
-	ApiReadTimeout        int      `json:"api_read_timeout"`
-	ApiWriteTimeout       int      `json:"api_write_timeout"`
-	EtcdEndpoints         []string `json:"etcd_endpoints"`
-	EtcdDialTimeout       int      `json:"etcd_dial_timeout"`
-	WebRoot               string   `json:"web_root"`
-	MongodbUrl            string   `json:"mongodb_url"`
-	MongodbConnectTimeout int      `json:"mongodb_connect_timeout"`
+	ApiPort               int      `json:"apiPort"`
+	ApiReadTimeout        int      `json:"apiReadTimeout"`
+	ApiWriteTimeout       int      `json:"apiWriteTimeout"`
+	EtcdEndpoints         []string `json:"etcdEndpoints"`
+	EtcdDialTimeout       int      `json:"etcdDialTimeout"`
+	WebRoot               string   `json:"webRoot"`
+	MongodbUrl            string   `json:"mongodbUrl"`
+	MongodbConnectTimeout int      `json:"mongodbConnectTimeout"`
 }
 
 // 配置句柄单例
@@ -40,6 +40,5 @@ func InitConfig(filename string) (err error) {
 
 	// 单例赋值
 	G_config = &conf
-
 	return
 }
