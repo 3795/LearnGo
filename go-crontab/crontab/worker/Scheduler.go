@@ -85,7 +85,8 @@ func InitScheduler() (err error) {
 		jobResultChan:     make(chan *common.JobExecuteResult, 1000),
 	}
 
-	// todo 启动调度器
+	// 启动调度器
+	go G_scheduler.scheduleLoop()
 	return
 }
 
@@ -122,7 +123,32 @@ func (scheduler *Scheduler) scheduleLoop() {
 
 // 处理任务调度结果
 func (scheduler *Scheduler) handleJobResult(result *common.JobExecuteResult) {
+	var (
+		jobLog *common.JobLog
+	)
 
+	// 删除执行状态
+	delete(scheduler.jobExecutingTable, result.ExecuteInfo.Job.Name)
+
+	// 生成执行日志
+	if result.Err != common.ERR_LOCK_ALREADY_REQUIRED {
+		jobLog = &common.JobLog{
+			JobName:      result.ExecuteInfo.Job.Name,
+			Command:      result.ExecuteInfo.Job.Command,
+			Output:       string(result.Output),
+			PlanTime:     result.ExecuteInfo.PlanTime.UnixNano() / 1000 / 1000,
+			ScheduleTime: result.ExecuteInfo.RealTime.UnixNano() / 1000 / 1000,
+			StartTime:    result.StartTime.UnixNano() / 1000 / 1000,
+			EndTime:      result.EndTime.UnixNano() / 1000 / 1000,
+		}
+
+		if result.Err != nil {
+			jobLog.Err = result.Err.Error()
+		} else {
+			jobLog.Err = ""
+		}
+		G_logSink.Append(jobLog)
+	}
 }
 
 // 重新计算调度器触发时间

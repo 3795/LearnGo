@@ -1,27 +1,19 @@
 package main
 
-import (
-	"fmt"
-	"time"
-)
+import "fmt"
 
 func main() {
-	ch1 := make(chan int)
-	timer := time.NewTimer(1 * time.Second)
-	go func() {
-		for {
-			ch1 <- 1
-			time.Sleep(1 * time.Second)
-		}
-	}()
-	for {
-		select {
-		case a := <-ch1:
-			fmt.Println(a)
-		case <-timer.C:
-			fmt.Println("超时了")
-		}
-		timer.Reset(1 * time.Second)
+	ch1 := make(chan int, 10)
+	for i := 0; i < 11; i++ {
+		append(ch1, i)
 	}
-	fmt.Println("你好")
+	fmt.Println("程序未被阻塞")
+}
+
+func append(ch chan int, i int) {
+	select {
+	case ch <- i:
+	default:
+		fmt.Printf("数字 %d 被丢弃了\n", i)
+	}
 }

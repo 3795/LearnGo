@@ -159,7 +159,7 @@ func Lease(lease clientv3.Lease, kv clientv3.KV) {
 	leaseId = leaseGrantResp.ID
 
 	// 这样设置后，每过3秒左右，就会续租租约，重置过期时间
-	//if keepRespChan, err = lease.KeepAlive(context.TODO(), leaseId); err != nil {
+	//if keepRespChan, err = lease.KeepAlive(context.Background(), leaseId); err != nil {
 	//	fmt.Println(err)
 	//	return
 	//}
