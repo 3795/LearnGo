@@ -43,7 +43,29 @@ func (jobMgr *JobMgr) watchJobs() (err error) {
 		if job, err = common.UnpackJob(kvpair.Value); err == nil {
 			jobEvent = common.BuildJobEvent(common.JOB_EVENT_SAVE, job)
 			// 同步给调度携程
+			G_scheduler.PushJobEvent(jobEvent)
 		}
 	}
+
+	// 从该revision向后监听变化事件
+	go func() {
+		watchStartRevision = getResp.Header.Revision + 1
+		watchChan = jobMgr.watcher.Watch(context.TODO(), common.JOB_SAVE_DIR, clientv3.WithRev(watchStartRevision), clientv3.WithPrefix())
+		for watchResp = range watchChan {
+			for _, watchEvent = range watchResp.Events {
+				switch watchEvent.Type {
+				case mvccpb.PUT:
+
+				}
+			}
+		}
+	}()
+
+	return
+}
+
+// 创建任务执行锁
+func (jobMgr *JobMgr) CreateJobLock(jobName string) (jobLock *JobLock) {
+	jobLock = InitJobLock(jobName, jobMgr.kv, jobMgr.lease)
 	return
 }
