@@ -97,6 +97,16 @@ func BuildJobExecuteInfo(jobSchedulePlan *JobSchedulePlan) (jobExecuteInfo *JobE
 }
 
 // 提取worker节点的IP
-func ExtracWorkerIP(regKey string) string {
+func ExtractWorkerIP(regKey string) string {
 	return strings.TrimPrefix(regKey, JOB_WORKER_DIR)
+}
+
+// 从etcd的key中提取任务名
+func ExtractJobName(jobKey string) string {
+	return strings.TrimPrefix(jobKey, JOB_SAVE_DIR)
+}
+
+// 从/cron/killer/job10中提取job10
+func ExtractKillerName(killerKey string) string {
+	return strings.TrimPrefix(killerKey, JOB_KILLER_DIR)
 }
