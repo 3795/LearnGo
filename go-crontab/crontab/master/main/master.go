@@ -28,12 +28,18 @@ func main() {
 		err error
 	)
 
+	// 初始化命令行参数
 	initArgs()
 
+	// 初始化线程
 	initEnv()
 
 	// 加载配置
 	if err = master.InitConfig(confFile); err != nil {
+		goto ERR
+	}
+
+	if err = master.InitWorkerMgr(); err != nil {
 		goto ERR
 	}
 
@@ -44,6 +50,11 @@ func main() {
 
 	// 启动Etcd服务
 	if err = master.InitJobMgr(); err != nil {
+		goto ERR
+	}
+
+	//  日志管理器
+	if err = master.InitLogMgr(); err != nil {
 		goto ERR
 	}
 
