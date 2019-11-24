@@ -87,6 +87,7 @@ ERR:
 	handleResponse(resp, err)
 }
 
+// 列举所有crontab任务
 func handleJobList(resp http.ResponseWriter, req *http.Request) {
 	var (
 		jobList []*common.Job
@@ -142,6 +143,66 @@ ERR:
 	handleResponse(resp, err)
 }
 
+// 查询任务日志
+func handleJobLog(resp http.ResponseWriter, req *http.Request) {
+	var (
+		err        error
+		name       string // 任务名字
+		skipParam  string // 从第几条开始
+		limitParam string // 返回多少条
+		skip       int
+		limit      int
+		logArr     []*common.JobLog
+		bytes      []byte
+	)
+
+	if err = req.ParseForm(); err != nil {
+		goto ERR
+	}
+
+	name = req.Form.Get("name")
+	skipParam = req.Form.Get("skip")
+	limitParam = req.Form.Get("limit")
+	if skip, err = strconv.Atoi(skipParam); err != nil {
+		skip = 0
+	}
+	if limit, err = strconv.Atoi(limitParam); err != nil {
+		limit = 20
+	}
+
+	if logArr, err = G_logMgr.ListLog(name, skip, limit); err != nil {
+		goto ERR
+	}
+
+	if bytes, err = common.BuildResponse(0, "success", logArr); err == nil {
+		_, _ = resp.Write(bytes)
+	}
+
+ERR:
+	handleResponse(resp, err)
+
+}
+
+// 获取健康的worker节点列表
+func handleWorkerList(resp http.ResponseWriter, req *http.Request) {
+	var (
+		workerArr []string
+		err       error
+		bytes     []byte
+	)
+
+	if workerArr, err = G_workerMgr.ListWorkers(); err != nil {
+		goto ERR
+	}
+
+	if bytes, err = common.BuildResponse(0, "success", workerArr); err == nil {
+		_, _ = resp.Write(bytes)
+	}
+
+ERR:
+	handleResponse(resp, err)
+}
+
 // 处理业务中的异常
 func handleResponse(resp http.ResponseWriter, err error) {
 	if bytes, err := common.BuildResponse(-1, err.Error(), nil); err == nil {
@@ -163,6 +224,8 @@ func InitApiServer() (err error) {
 	mux.HandleFunc("/job/delete", handleJobDelete)
 	mux.HandleFunc("/job/list", handleJobList)
 	mux.HandleFunc("/job/kill", handleJobKill)
+	mux.HandleFunc("/job/log", handleJobLog)
+	mux.HandleFunc("/worker/list", handleWorkerList)
 
 	// 静态文件目录
 	staticDir = http.Dir(G_config.WebRoot)
