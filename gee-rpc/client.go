@@ -217,9 +217,10 @@ func (client *Client) Go(serviceMethod string, args interface{}, reply interface
 	}
 
 	call := &Call{
-		Args:  args,
-		Reply: reply,
-		Done:  done,
+		ServiceMethod: serviceMethod,
+		Args:          args,
+		Reply:         reply,
+		Done:          done,
 	}
 	client.send(call)
 	return call
