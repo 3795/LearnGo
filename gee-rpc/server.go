@@ -16,6 +16,12 @@ import (
 
 const MagicNumber = 0x3bef5c
 
+const (
+	connected        = "200 Connected to GeeRPC"
+	defaultRPCPath   = "/_geerpc_"
+	defaultDebugPath = "/debug/geerpc"
+)
+
 type Option struct {
 	MagicNumber       int           // 标记这是一个gee-rpc请求
 	CodecType         codec.Type    // 选择不同的编码方式
