@@ -1,27 +1,19 @@
 package main
 
 import (
-	"database/sql"
-	"log"
-
+	gee_orm "LearnGo/gee-orm"
+	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
-	db, _ := sql.Open("sqlite3", "gee.db")
-	defer func() { _ = db.Close() }()
-
-	_, _ = db.Exec("drop table if exists User;")
-	_, _ = db.Exec("create table User(Name text);")
-	result, err := db.Exec("INSERT INTO User(`Name`) values (?), (?)", "Tom", "Sam")
-	if err == nil {
-		affected, _ := result.RowsAffected()
-		log.Println(affected)
-	}
-
-	row := db.QueryRow("select Name from User limit 1")
-	var name string
-	if err := row.Scan(&name); err == nil {
-		log.Println(name)
-	}
+	engine, _ := gee_orm.NewEngine("sqlite3", "gee.db")
+	defer engine.Close()
+	s := engine.NewSession()
+	_, _ = s.Raw("DROP TABLE IF EXISTS User;").Exec()
+	_, _ = s.Raw("CREATE TABLE User(Name text);").Exec()
+	_, _ = s.Raw("CREATE TABLE User(Name text);").Exec()
+	result, _ := s.Raw("INSERT INTO User(`Name`) values (?), (?)", "Tom", "Sam").Exec()
+	count, _ := result.RowsAffected()
+	fmt.Printf("Exec success, %d affected\n", count)
 }
