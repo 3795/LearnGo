@@ -1,19 +1,23 @@
 package session
 
 import (
+	"LearnGo/gee-orm/dialect"
 	"LearnGo/gee-orm/log"
+	"LearnGo/gee-orm/schema"
 	"database/sql"
 	"strings"
 )
 
 type Session struct {
-	db      *sql.DB
-	sql     strings.Builder
-	sqlVars []interface{}
+	db       *sql.DB
+	sql      strings.Builder
+	sqlVars  []interface{}
+	dialect  dialect.Dialect
+	refTable *schema.Schema
 }
 
-func New(db *sql.DB) *Session {
-	return &Session{db: db}
+func New(db *sql.DB, dialect dialect.Dialect) *Session {
+	return &Session{db: db, dialect: dialect}
 }
 
 func (s *Session) Clear() {
