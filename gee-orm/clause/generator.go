@@ -64,5 +64,10 @@ func _limit(values ...interface{}) (string, []interface{}) {
 }
 
 func _where(values ...interface{}) (string, []interface{}) {
-	return nil, nil
+	desc, vars := values[0], values[1:]
+	return fmt.Sprintf("WHERE %s", desc), vars // where a = ? and b = ? and c = ?
+}
+
+func _orderBy(values ...interface{}) (string, []interface{}) {
+	return fmt.Sprintf("ORDER BY %s", values[0]), []interface{}{}
 }
