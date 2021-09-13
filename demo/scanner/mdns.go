@@ -18,14 +18,15 @@ func listenMDNS(ctx context.Context) {
 		log.Fatal("pcap打开失败:", err)
 	}
 	defer handle.Close()
-	handle.SetBPFFilter("udp and port 5353")
+	handle.SetBPFFilter("udp and port 5353") // 只监听过滤"udp and port 5353"
 	ps := gopacket.NewPacketSource(handle, handle.LinkType())
 	for {
 		select {
 		case <-ctx.Done():
 			return
 		case p := <-ps.Packets():
-			if len(p.Layers()) == 4 {
+			if len(p.Layers()) == 4 { // 包中的帧数
+				// 需要熟悉网络协议的结构
 				c := p.Layers()[3].LayerContents()
 				if c[2] == 0x84 && c[3] == 0x00 && c[6] == 0x00 && c[7] == 0x01 {
 					// 从网络层(ipv4)拿IP, 不考虑IPv6

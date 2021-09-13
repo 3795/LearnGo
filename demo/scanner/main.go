@@ -68,7 +68,7 @@ func PrintData() {
 func pushData(ip string, mac net.HardwareAddr, hostname, manuf string) {
 	// 停止计时器
 	do <- START
-	var mu sync.RWMutex
+	var mu sync.RWMutex // 对容器操作，所以加锁
 	mu.RLock()
 	defer func() {
 		// 重置计时器
@@ -92,15 +92,16 @@ func pushData(ip string, mac net.HardwareAddr, hostname, manuf string) {
 	data[ip] = info
 }
 
+// 设置网络信息，优选使用手动输入的网卡信息
 func setupNetInfo(f string) {
 	var ifs []net.Interface
 	var err error
 	if f == "" {
-		ifs, err = net.Interfaces()
+		ifs, err = net.Interfaces() // 不输入的话，则获取本机的网卡信息（多个）
 	} else {
 		// 已经选择iface
 		var it *net.Interface
-		it, err = net.InterfaceByName(f)
+		it, err = net.InterfaceByName(f) // 根据输入的网卡名，找到网卡
 		if err == nil {
 			ifs = append(ifs, *it)
 		}
@@ -134,17 +135,18 @@ func localHost() {
 
 func sendARP() {
 	// ips 是内网IP地址集合
-	ips := Table(ipNet)
+	ips := Table(ipNet) // ipNet是本机自己的地址，根据自己的ip地址和子网掩码，算出ip网段
 	for _, ip := range ips {
-		go sendArpPackage(ip)
+		go sendArpPackage(ip) // 给每个ip发送arp
 	}
 }
 
 func main() {
 	// allow non root user to execute by compare with euid
-	if os.Geteuid() != 0 {
-		log.Fatal("goscan must run as root.")
-	}
+	fmt.Println(os.Getegid())
+	//if os.Geteuid() != 0 {
+	//	log.Fatal("goscan must run as root.")
+	//}
 	flag.StringVar(&iface, "I", "", "Network interface name")
 	flag.Parse()
 	// 初始化 data
@@ -154,16 +156,16 @@ func main() {
 	setupNetInfo(iface)
 
 	ctx, cancel := context.WithCancel(context.Background())
-	go listenARP(ctx)
-	go listenMDNS(ctx)
-	go listenNBNS(ctx)
-	go sendARP()
-	go localHost()
+	go listenARP(ctx)  // 开启arp协议响应监听
+	go listenMDNS(ctx) // 开启mdns协议响应监听（多播dns，在没有dns服务器的时候，让局域网内的主机实现互相发现和通信）
+	go listenNBNS(ctx) // 开启nbns协议响应监听（NetBios，基于NetBios名称访问的网络上提供主机名和地址映射的方法）
+	go sendARP()       // 发送arp协议
+	go localHost()     // 将本地的网络地址写入dataMap
 
 	t = time.NewTicker(4 * time.Second)
 	for {
 		select {
-		case <-t.C:
+		case <-t.C: // 倒计时结束之后，终止程序，打印探测结果
 			PrintData()
 			cancel()
 			goto END

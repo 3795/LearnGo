@@ -12,27 +12,27 @@ import (
 )
 
 func listenARP(ctx context.Context) {
-	handle, err := pcap.OpenLive(iface, 1024, false, 10*time.Second)
+	handle, err := pcap.OpenLive(iface, 1024, false, 10*time.Second) // 打开handler
 	if err != nil {
 		log.Fatal("pcap打开失败:", err)
 	}
 	defer handle.Close()
-	handle.SetBPFFilter("arp")
-	ps := gopacket.NewPacketSource(handle, handle.LinkType())
+	handle.SetBPFFilter("arp")                                // 只过去arp协议的东西
+	ps := gopacket.NewPacketSource(handle, handle.LinkType()) // 解析监听到的包
 	for {
 		select {
 		case <-ctx.Done():
 			return
-		case p := <-ps.Packets():
-			arp := p.Layer(layers.LayerTypeARP).(*layers.ARP)
+		case p := <-ps.Packets(): // ps通道中来了一个包
+			arp := p.Layer(layers.LayerTypeARP).(*layers.ARP) // 进行解析
 			if arp.Operation == 2 {
-				mac := net.HardwareAddr(arp.SourceHwAddress)
-				m := manuf.Search(mac.String())
-				pushData(ParseIP(arp.SourceProtAddress).String(), mac, "", m)
+				mac := net.HardwareAddr(arp.SourceHwAddress)                  // 解析mac地址
+				m := manuf.Search(mac.String())                               // 根据mac地址，找到设备的制造厂商
+				pushData(ParseIP(arp.SourceProtAddress).String(), mac, "", m) // 将解析的数据放到data通道，输出结果，并重置计时器
 				if strings.Contains(m, "Apple") {
-					go sendMdns(ParseIP(arp.SourceProtAddress), mac)
+					go sendMdns(ParseIP(arp.SourceProtAddress), mac) // 如果是mac电脑，发送mdns（UDP？）
 				} else {
-					go sendNbns(ParseIP(arp.SourceProtAddress), mac)
+					go sendNbns(ParseIP(arp.SourceProtAddress), mac) // 如果是linux或者windows，发送nbns（也是UDP）
 				}
 			}
 		}
@@ -42,8 +42,8 @@ func listenARP(ctx context.Context) {
 // 发送arp包
 // ip 目标IP地址
 func sendArpPackage(ip IP) {
-	srcIp := net.ParseIP(ipNet.IP.String()).To4()
-	dstIp := net.ParseIP(ip.String()).To4()
+	srcIp := net.ParseIP(ipNet.IP.String()).To4() // 本机ip
+	dstIp := net.ParseIP(ip.String()).To4()       // 目标ip
 	if srcIp == nil || dstIp == nil {
 		log.Fatal("ip 解析出问题")
 	}
